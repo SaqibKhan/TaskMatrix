@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import AppTaskForm from "./AppTaskForm";
-import { Modal } from '@mui/material'; // Assuming MUI is available, otherwise use a custom modal
+import { Modal } from '@mui/material';
+import { useInView } from 'react-intersection-observer';
 
 export interface IAppTask {
   id: number;
@@ -11,23 +12,44 @@ export interface IAppTask {
   status: string;
 }
 
-const API_URL = 'https://localhost:7127/AppTask';
+const API_URL = 'https://localhost:7127/AppTask/paged';
+const PAGE_SIZE = 20;
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<IAppTask[]>([]);
   const [editingTask, setEditingTask] = useState<IAppTask | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [skip, setSkip] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const loadingRef = useRef(false);
 
-  const fetchTasks = () => {
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => setTasks(data))
-      .catch(() => setTasks([]));
+  const { ref, inView } = useInView({
+    threshold: 0,
+    triggerOnce: false,
+  });
+
+  const fetchTasks = async (reset = false) => {
+    if (loadingRef.current || !hasMore) return;
+    loadingRef.current = true;
+    const res = await fetch(`${API_URL}?skip=${reset ? 0 : skip}&take=${PAGE_SIZE}`);
+    const data = await res.json();
+    setTasks(prev => reset ? data : [...prev, ...data]);
+    setSkip(prev => reset ? PAGE_SIZE : prev + PAGE_SIZE);
+    setHasMore(data.length === PAGE_SIZE);
+    loadingRef.current = false;
   };
 
   useEffect(() => {
-    fetchTasks();
+    fetchTasks(true);
+    // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (inView && hasMore) {
+      fetchTasks();
+    }
+    // eslint-disable-next-line
+  }, [inView, hasMore]);
 
   const handleEdit = (task: IAppTask) => {
     setEditingTask(task);
@@ -35,8 +57,10 @@ const TaskList: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-    fetchTasks();
+    await fetch(`https://localhost:7127/AppTask/${id}`, { method: 'DELETE' });
+    setSkip(0);
+    setHasMore(true);
+    fetchTasks(true);
   };
 
   const handleAdd = () => {
@@ -47,7 +71,11 @@ const TaskList: React.FC = () => {
   const handleFormClose = (refresh: boolean = false) => {
     setShowForm(false);
     setEditingTask(null);
-    if (refresh) fetchTasks();
+    if (refresh) {
+      setSkip(0);
+      setHasMore(true);
+      fetchTasks(true);
+    }
   };
 
   return (
@@ -60,7 +88,7 @@ const TaskList: React.FC = () => {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           borderRadius: '8px',
-          minWidth: '400px'
+          minWidth: '350px'
         }} className="app-task-form-container">
           <AppTaskForm
             task={editingTask}
@@ -90,7 +118,10 @@ const TaskList: React.FC = () => {
             </tr>
           ))}
         </tbody>
+        {/* Sentinel div for intersection observer */}
+        <div ref={ref} style={{ height: 1 }} />
       </table>
+      {!hasMore && <div>No more tasks to load.</div>}
     </div>
   );
 };

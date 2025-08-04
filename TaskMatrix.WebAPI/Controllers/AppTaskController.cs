@@ -65,4 +65,11 @@ public class AppTaskController : ControllerBase
         await _iAppTaskService.DeleteAsync(id);
         return NoContent();
     }
+
+    [HttpGet("paged")]
+    public async Task<ActionResult<IEnumerable<AppTaskDto>>> GetPaged([FromQuery] int skip = 0, [FromQuery] int take = 20)
+    {
+        var tasks = await _iAppTaskService.GetPagedAsync(skip, take);
+        return Ok(tasks);
+    }
 }

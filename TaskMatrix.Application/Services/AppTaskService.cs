@@ -38,6 +38,11 @@ namespace TaskMatrix.Application.Services
         {
             await _appTaskRepository.DeleteAsync(id);
         }
+        public async Task<IEnumerable<AppTaskDto>> GetPagedAsync(int skip, int take)
+        {
+            var appTasks = await _appTaskRepository.GetPagedAsync(skip, take);
+            return appTasks.Select(p => new AppTaskDto(p.Id, p.Title, p.Description, p.Priority, p.DueDate, p.Status));
+        }
     }
 }
 

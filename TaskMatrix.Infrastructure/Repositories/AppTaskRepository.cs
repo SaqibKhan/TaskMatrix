@@ -43,6 +43,15 @@ namespace TaskMatrix.Infrastructure.Repositories
             _context.AppTasks.Remove(product);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<AppTask>> GetPagedAsync(int skip, int take)
+        {
+            return await _context.AppTasks
+                .OrderBy(t => t.Id)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+        }
     }
 }
 

@@ -6,6 +6,7 @@ namespace TaskMatrix.Domain.Interfaces
     {
         Task<AppTask> GetByIdAsync(int id);
         Task<IEnumerable<AppTask>> GetAllAsync();
+        Task<IEnumerable<AppTask>> GetPagedAsync(int skip, int take); // <-- Add this
         Task<AppTask> AddAsync(AppTask product);
         Task UpdateAsync(AppTask product);
         Task DeleteAsync(int id);
