@@ -7,7 +7,7 @@ export interface IAppTask {
     title: string;
     description: string;
     priority: number;
-    dueDate: string;
+    dueDate: string; 
     status: number;
 }
 
@@ -22,7 +22,7 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
         id: 0,
         title: '',
         description: '',
-        priority:0 ,
+        priority: 0,
         dueDate: '',
         status: 0
     });
@@ -30,7 +30,10 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
 
     useEffect(() => {
         if (task) {
-            setFormData(task);
+            setFormData({
+                ...task,
+                dueDate: task.dueDate ? formatDate(task.dueDate) : ''
+            });
         } else {
             setFormData({
                 id: 0,
@@ -42,6 +45,15 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
             });
         }
     }, [task]);
+
+    // Helper to format date to yyyy-MM-dd for input[type="date"]
+    function formatDate(date: string | Date): string {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -65,7 +77,7 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
                     dueDate: formData.dueDate,
                     status: Number(formData.status)
                 };
-                await axios.put(API_URL, updateDto); // <-- Fix: use correct endpoint for PUT
+                await axios.put(API_URL, updateDto);
             } else {
                 // Add: use CreateAppTaskDto (no id)
                 const createDto =  {
@@ -79,9 +91,7 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
             }   
             onClose(true);
         } catch (error) {
-            // Show error message to user
             if (axios.isAxiosError(error)) {
-                // Try to show more detailed error if available
                 const serverMessage =
                     error.response?.data?.message ||
                     error.response?.data?.title ||
@@ -119,7 +129,13 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
                 </div>
                 <div>
                     <label>Due Date:</label>
-                    <input type="date" name="dueDate" value={formData.dueDate} onChange={handleChange} required />
+                    <input
+                        type="date"
+                        name="dueDate"
+                        value={formData.dueDate}    
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
                 <div>
                     <label>Status:</label>

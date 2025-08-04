@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AppTaskForm from "./AppTaskForm";
+import { Modal } from '@mui/material'; // Assuming MUI is available, otherwise use a custom modal
 
 export interface IAppTask {
   id: number;
@@ -52,12 +53,23 @@ const TaskList: React.FC = () => {
   return (
     <div>
       <button onClick={handleAdd}>Add Task</button>
-      {showForm && (
-        <AppTaskForm
-          task={editingTask}
-          onClose={handleFormClose}
-        />
-      )}
+      <Modal open={showForm} onClose={() => handleFormClose(false)}>
+        <div style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: 'white',
+          padding: '2rem',
+          borderRadius: '8px',
+          minWidth: '300px'
+        }}>
+          <AppTaskForm
+            task={editingTask}
+            onClose={handleFormClose}
+          />
+        </div>
+      </Modal>
       <table>
         <thead>
           <tr>
@@ -86,3 +98,5 @@ const TaskList: React.FC = () => {
 };
 
 export default TaskList;
+
+
