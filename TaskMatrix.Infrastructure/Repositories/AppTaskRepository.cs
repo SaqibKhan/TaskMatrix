@@ -24,23 +24,23 @@ namespace TaskMatrix.Infrastructure.Repositories
             return await _context.AppTasks.ToListAsync();
         }
 
-        public async Task<AppTask> AddAsync(AppTask product)
+        public async Task<AppTask> AddAsync(AppTask task)
         {
-            await _context.AppTasks.AddAsync(product);
+            await _context.AppTasks.AddAsync(task);
             await _context.SaveChangesAsync();
-            return product;
+            return task;
         }
 
-        public async Task UpdateAsync(AppTask product)
+        public async Task UpdateAsync(AppTask task)
         {
-            _context.AppTasks.Update(product);
+            _context.AppTasks.Update(task);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var product = await GetByIdAsync(id);
-            _context.AppTasks.Remove(product);
+            var task = await GetByIdAsync(id);
+            _context.AppTasks.Remove(task);
             await _context.SaveChangesAsync();
         }
 

@@ -13,7 +13,7 @@ namespace TaskMatrix.Application.Interfaces
         Task<IEnumerable<AppTaskDto>> GetAllAsync();
         Task<IEnumerable<AppTaskDto>> GetPagedAsync(int skip, int take);
         Task<AppTaskDto> CreateAsync(CreateAppTaskDto dto);
-        Task UpdateAsync(int id, UpdateAppTaskDto dto);
+        Task UpdateAsync(UpdateAppTaskDto dto);
         Task DeleteAsync(int id);
     }
 }

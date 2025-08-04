@@ -29,11 +29,10 @@ public class AppTask
             throw new ArgumentNullException(@"Title cannot be empty");
         if (priority <= 0)
             throw new ArgumentNullException($"Priority must be greater than zero");
-
-        title = title;
+        Title = title;
+        Priority = (TaskPriority)priority;
+        Status = status;
         Description = description ?? "";
-        priority = priority;
-        status = status;
     }
 
   

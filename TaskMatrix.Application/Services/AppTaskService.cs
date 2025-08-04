@@ -28,9 +28,9 @@ namespace TaskMatrix.Application.Services
             var created = await _appTaskRepository.AddAsync(appTask);
             return new AppTaskDto(created.Id, created.Title, created.Description, created.Priority, created.DueDate, created.Status);
         }
-        public async Task UpdateAsync(int id, UpdateAppTaskDto dto)
+        public async Task UpdateAsync(UpdateAppTaskDto dto)
         {
-            var appTask = await _appTaskRepository.GetByIdAsync(id);
+            var appTask = await _appTaskRepository.GetByIdAsync(dto.Id);
             appTask.UpdateAppTask(dto.Title, dto.Description, (int)dto.Priority, dto.Status);
             await _appTaskRepository.UpdateAsync(appTask);
         }

@@ -55,7 +55,7 @@ public class AppTaskController : ControllerBase
     [HttpPut()]
     public async Task<IActionResult> Update(UpdateAppTaskDto dto)
     {
-        await _iAppTaskService.UpdateAsync(dto.Id, dto);
+        await _iAppTaskService.UpdateAsync(dto);
         return NoContent();
     }
 

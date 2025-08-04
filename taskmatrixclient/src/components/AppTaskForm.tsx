@@ -40,7 +40,8 @@ const statusOptions = [
     { value: 1, label: 'Pending' },
     { value: 2, label: 'In Progress' },
     { value: 3, label: 'Completed' },
-    { value: 4, label: 'Archived' }
+    { value: 4, label: 'Archived' },
+    { value: 5, label: 'Deleted' }
 ];
 
 // Helper to format date to yyyy-MM-dd for input[type="date"]

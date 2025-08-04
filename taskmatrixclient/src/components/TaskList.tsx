@@ -113,6 +113,33 @@ const TaskList: React.FC = () => {
     }
   };
 
+  // Add these helper functions to map numeric values to string labels
+  const priorityOptions = [
+    { value: -1, label: 'Select' },
+    { value: 1, label: 'High' },
+    { value: 2, label: 'Normal' },
+    { value: 3, label: 'Low' }
+  ];
+
+  const statusOptions = [
+    { value: -1, label: 'Select' },
+    { value: 1, label: 'Pending' },
+    { value: 2, label: 'In Progress' },
+    { value: 3, label: 'Completed' },
+    { value: 4, label: 'Archived' },
+    { value: 5, label: 'Deleted' }
+  ];
+
+  function getPriorityLabel(value: number | string) {
+    const opt = priorityOptions.find(o => o.value === Number(value));
+    return opt ? opt.label : value;
+  }
+
+  function getStatusLabel(value: number | string) {
+    const opt = statusOptions.find(o => o.value === Number(value));
+    return opt ? opt.label : value;
+  }
+
   return (
     <div className="task-list-container">
       <TaskStatusChart />
@@ -153,9 +180,9 @@ const TaskList: React.FC = () => {
               <td>{task.id}</td>
               <td>{task.title}</td>
               <td>{task.description}</td>
-              <td>{task.priority}</td>
+              <td>{getPriorityLabel(task.priority)}</td>
               <td>{task.dueDate}</td>
-              <td>{task.status}</td>
+              <td>{getStatusLabel(task.status)}</td>
               <td>
                 <button onClick={() => handleEdit(task)}>Edit</button>
                 <button onClick={() => handleDelete(task.id)}>Delete</button>
