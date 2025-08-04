@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Modal } from '@mui/material';
 
 // Define IAppTask type locally since TaskList.tsx does not export it
 export interface IAppTask {
@@ -54,6 +55,8 @@ function formatDate(date: string | Date): string {
 const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
     const [formData, setFormData] = useState<IAppTask>(defaultTask);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [pendingSubmit, setPendingSubmit] = useState(false);
 
     useEffect(() => {
         if (task) {
@@ -77,6 +80,12 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage(null);
+
+        if (Number(formData.priority) === 1 && !showConfirm) {
+            setShowConfirm(true);
+            setPendingSubmit(true);
+            return;
+        }
 
         try {
             if (task) {
@@ -110,6 +119,47 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
             }
             console.error(error);
         }
+    };
+
+    const handleConfirm = async () => {
+        setShowConfirm(false);
+        setPendingSubmit(false);
+        // Manually trigger submit after confirmation
+        try {
+            if (task) {
+                const updateDto = {
+                    ...formData,
+                    priority: Number(formData.priority),
+                    status: Number(formData.status)
+                };
+                await axios.put(API_URL, updateDto);
+            } else {
+                const { id, ...createDto } = {
+                    ...formData,
+                    priority: Number(formData.priority),
+                    status: Number(formData.status)
+                };
+                await axios.post(API_URL, createDto);
+            }
+            onClose(true);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                const serverMessage =
+                    error.response?.data?.message ||
+                    error.response?.data?.title ||
+                    error.response?.data?.error ||
+                    'Failed to submit task. Please check your input.';
+                setErrorMessage(serverMessage);
+            } else {
+                setErrorMessage('Failed to submit task. Please check your input.');
+            }
+            console.error(error);
+        }
+    };
+
+    const handleCancelConfirm = () => {
+        setShowConfirm(false);
+        setPendingSubmit(false);
     };
 
     return (
@@ -199,6 +249,28 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
                     </tbody>
                 </table>
             </form>
+            <Modal open={showConfirm} onClose={handleCancelConfirm}>
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        background: '#fff',
+                        padding: '24px',
+                        borderRadius: '8px',
+                        minWidth: '300px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                    }}
+                >
+                    <h3>Confirm High Priority</h3>
+                    <p>Are you sure you want to set this task to <b>High</b> priority?</p>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                        <button onClick={handleConfirm}>Yes, Set High Priority</button>
+                        <button onClick={handleCancelConfirm}>Cancel</button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };
