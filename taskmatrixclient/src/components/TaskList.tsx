@@ -51,7 +51,7 @@ const TaskList: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="task-list-container">
       <button onClick={handleAdd}>Add Task</button>
       <Modal open={showForm} onClose={() => handleFormClose(false)}>
         <div style={{
@@ -59,11 +59,9 @@ const TaskList: React.FC = () => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          background: 'white',
-          padding: '2rem',
           borderRadius: '8px',
-          minWidth: '300px'
-        }}>
+          minWidth: '400px'
+        }} className="app-task-form-container">
           <AppTaskForm
             task={editingTask}
             onClose={handleFormClose}

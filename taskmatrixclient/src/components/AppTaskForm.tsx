@@ -106,49 +106,59 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
     };
 
     return (
-        <div>
-            <h2>{task ? 'Edit Task' : 'Add Task'}</h2>
-            {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+                <div>
+                    <h2>{task ? 'Edit Task' : 'Add Task'}</h2>
+                    {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Title:</label>
-                    <input name="title" value={formData.title} onChange={handleChange} required />
-                </div>
-                <div>
-                    <label>Description:</label>
-                    <input name="description" value={formData.description} onChange={handleChange} required />
-                </div>
-                <div>
-                    <label>Priority:</label>
-                    <select name="priority" value={formData.priority} onChange={handleChange} required>
+
+                <table>
+                    <tr>
+                    <td>  <label>Title:</label></td>
+                     <td> <input name="title" value={formData.title} onChange={handleChange} required /></td>
+                    </tr>
+                    <tr>
+                        <td> <label>Description:</label></td>
+                        <td> <input name="description" value={formData.description} onChange={handleChange} required /></td>
+                    </tr>
+
+                    <tr>
+                    <td> <label>Priority:</label></td>
+                    <td><select name="priority" value={formData.priority} onChange={handleChange} required>
                         <option value="-1">Select</option>
                         <option value="1">High</option>
                         <option value="2">Normal</option>
                         <option value="3">Low</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Due Date:</label>
-                    <input
-                        type="date"
-                        name="dueDate"
-                        value={formData.dueDate}    
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label>Status:</label>
-                    <select name="status" value={formData.status} onChange={handleChange} required>
-                        <option value="-1">Select</option>
-                        <option value="1">Pending</option>
-                        <option value="2">In Progress</option>
-                        <option value="3">Completed</option>
-                        <option value="4">Deleted</option>
-                    </select>
-                </div>
-                <button type="submit">{task ? 'Update' : 'Add'}</button>
-                <button type="button" onClick={() => onClose(false)}>Cancel</button>
+                    </select></td>
+                    </tr>
+                    <tr>
+                        <td> <label>Due Date:</label></td>
+                        <td><input
+                                type="date"
+                                name="dueDate"
+                                value={formData.dueDate}
+                                onChange={handleChange}
+                                required
+                            /></td>
+                    </tr>
+
+                    <tr>
+                        <td> <label>Status:</label></td>
+                        <td> <select name="status" value={formData.status} onChange={handleChange} required>
+                            <option value="-1">Select</option>
+                            <option value="1">Pending</option>
+                            <option value="2">In Progress</option>
+                            <option value="3">Completed</option>
+                            <option value="4">Deleted</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td><button type="submit">{task ? 'Update' : 'Add'}</button></td>
+                        <td> <button type="button" onClick={() => onClose(false)}>Cancel</button></td>
+                    </tr>
+                </table>
+
+                
+               
             </form>
         </div>
     );

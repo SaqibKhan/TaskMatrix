@@ -1,3 +1,69 @@
+:root {
+  --primary-bg: #d0e8f2;
+  --secondary-bg: #eceff1;
+}
+
+.task-list-container {
+  background: #f8f8f8;
+  padding: 2em;
+  border-radius: 12px;
+}
+
+.app-task-form-container {
+  background: var(--secondary-bg);
+  padding: 2em;
+  border-radius: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.app-task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2em;
+}
+
+.app-task-form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.app-task-form-group label {
+  margin-bottom: 0.3em;
+  font-weight: 500;
+}
+
+.app-task-form input,
+.app-task-form select {
+  width: 100%;
+  padding: 0.5em;
+  border-radius: 6px;
+  border: 1px solid #b0bec5;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.app-task-form button {
+  margin-right: 0.7em;
+  padding: 0.5em 1.2em;
+  border-radius: 6px;
+  border: none;
+  background: #90caf9;
+  color: #222;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.app-task-form button[type="button"] {
+  background: #b0bec5;
+}
+
+.app-task-form button:hover {
+  background: #64b5f6;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
