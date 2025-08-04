@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import AppTaskForm from "./AppTaskForm";
 import { Modal } from '@mui/material';
 import { useInView } from 'react-intersection-observer';
+import TaskStatusChart from './TaskStatusChart';
 
 export interface IAppTask {
   id: number;
@@ -80,6 +81,7 @@ const TaskList: React.FC = () => {
 
   return (
     <div className="task-list-container">
+      <TaskStatusChart />
       <button onClick={handleAdd}>Add Task</button>
       <Modal open={showForm} onClose={() => handleFormClose(false)}>
         <div style={{
@@ -118,9 +120,8 @@ const TaskList: React.FC = () => {
             </tr>
           ))}
         </tbody>
-        {/* Sentinel div for intersection observer */}
-        <div ref={ref} style={{ height: 1 }} />
       </table>
+      <div ref={ref} style={{ height: 1 }} />
       {!hasMore && <div>No more tasks to load.</div>}
     </div>
   );

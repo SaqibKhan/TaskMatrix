@@ -148,7 +148,7 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
                             <option value="1">Pending</option>
                             <option value="2">In Progress</option>
                             <option value="3">Completed</option>
-                            <option value="4">Deleted</option>
+                            <option value="4">Archived</option>
                         </select></td>
                     </tr>
                     <tr>

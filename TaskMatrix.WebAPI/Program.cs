@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using TaskMatrix.Application.DTOs;
 using TaskMatrix.Application.Interfaces;
@@ -41,6 +41,9 @@ public class Program
        
 
         var app = builder.Build();
+        // Use CORS
+        app.UseCors("AllowFrontend");
+        
         using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
@@ -56,9 +59,6 @@ public class Program
             app.UseSwaggerUI();
         }
         app.MapDefaultEndpoints();
-        // Use CORS
-        app.UseCors("AllowFrontend");
-
         // Configure the HTTP request pipeline.
 
         app.UseHttpsRedirection();
