@@ -1,44 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
-        
-export enum TaskStatus {
-  Pending = 1,
-  InProgress = 2,
-  Completed = 3,
-  Archived = 4,
-  Deleted = 5
-}
-
-export interface IAppTask {
-  id: number;
-  title: string;
-  description: string;
-  priority: string;
-  dueDate: string;
-  status: TaskStatus;
-}
+import { type IAppTask, TaskStatus, statusLabels } from './TaskTypes';
 
 const API_URL = 'https://localhost:7127/AppTask';
 const token = localStorage.getItem('jwtToken');
-
-const statusLabels: Record<TaskStatus, string> = {
-  [TaskStatus.Pending]: 'Pending',
-  [TaskStatus.InProgress]: 'In Progress',
-  [TaskStatus.Completed]: 'Completed',
-  [TaskStatus.Archived]: 'Archived',
-  [TaskStatus.Deleted]: 'Deleted'
-};
 
 const TaskStatusChart: React.FC = () => {
   const [pieData, setPieData] = useState<{ id: number, value: number, label: string }[]>([]);
 
   useEffect(() => {
     const fetchTasks = async () => {
-        const res = await fetch(API_URL, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });;
+      const res = await fetch(API_URL, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       const data: IAppTask[] = await res.json();
       const statusCount: Record<TaskStatus, number> = {
         [TaskStatus.Pending]: 0,

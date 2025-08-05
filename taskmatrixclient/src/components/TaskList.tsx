@@ -3,6 +3,7 @@ import AppTaskForm from "./AppTaskForm";
 import { Modal } from '@mui/material';
 import { useInView } from 'react-intersection-observer';
 import TaskStatusChart from './TaskStatusChart';
+import { type IAppTask } from './TaskTypes';
 
 
 export interface IAppTask {

@@ -1,25 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal } from '@mui/material';
-
+import { priorityOptions, statusOptions, type AppTaskFormProps, type IAppTask } from './TaskTypes';
 // Define IAppTask type locally since TaskList.tsx does not export it
-export interface IAppTask {
-    id: number;
-    title: string;
-    description: string;
-    priority: number;
-    dueDate: string;
-    status: number;
-}
 
-interface AppTaskFormProps {
-    task: IAppTask | null;
-    onClose: (refresh?: boolean) => void;
-}
-
-const API_URL = 'https://localhost:7127/AppTask';
-const token = localStorage.getItem('jwtToken');
-axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` }
 
 const defaultTask: IAppTask = {
     id: 0,
@@ -30,23 +14,10 @@ const defaultTask: IAppTask = {
     status: 0
 };
 
-const priorityOptions = [
-    { value: -1, label: 'Select' },
-    { value: 1, label: 'High' },
-    { value: 2, label: 'Normal' },
-    { value: 3, label: 'Low' }
-];
-
-const statusOptions = [
-    { value: -1, label: 'Select' },
-    { value: 1, label: 'Pending' },
-    { value: 2, label: 'In Progress' },
-    { value: 3, label: 'Completed' },
-    { value: 4, label: 'Archived' },
-    { value: 5, label: 'Deleted' }
-];
-
 // Helper to format date to yyyy-MM-dd for input[type="date"]
+const API_URL = 'https://localhost:7127/AppTask';
+const token = localStorage.getItem('jwtToken');
+axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` }
 function formatDate(date: string | Date): string {
     const d = new Date(date);
     const year = d.getFullYear();
@@ -59,7 +30,7 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
     const [formData, setFormData] = useState<IAppTask>(defaultTask);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [showConfirm, setShowConfirm] = useState(false);
-    const [setPendingSubmit] = useState(false);
+    const [pendingSubmit, setPendingSubmit] = useState(false);
 
     useEffect(() => {
         if (task) {
