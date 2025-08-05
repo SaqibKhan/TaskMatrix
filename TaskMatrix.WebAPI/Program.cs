@@ -1,4 +1,7 @@
-    using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using TaskMatrix.Application.DTOs;
 using TaskMatrix.Application.Interfaces;
@@ -40,6 +43,29 @@ public class Program
         builder.Services.AddScoped<IAppTaskService, AppTaskService>();
        
 
+        // Add JWT authentication
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            var jwtSettings = builder.Configuration.GetSection("Jwt");
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings["Issuer"],
+                ValidAudience = jwtSettings["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+            };
+        });
+
+        builder.Services.AddAuthorization();
+
         var app = builder.Build();
         // Use CORS
         app.UseCors("AllowFrontend");
@@ -51,6 +77,8 @@ public class Program
         }
         // logging middleware
         app.UseMiddleware<RequestLoggingMiddleware>();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

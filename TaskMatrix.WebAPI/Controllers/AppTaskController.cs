@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskMatrix.Application.DTOs;
 using TaskMatrix.Application.Interfaces;
 
 namespace TaskMatrix.WebAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class AppTaskController : ControllerBase

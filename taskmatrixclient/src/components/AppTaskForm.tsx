@@ -18,6 +18,8 @@ interface AppTaskFormProps {
 }
 
 const API_URL = 'https://localhost:7127/AppTask';
+const token = localStorage.getItem('jwtToken');
+axios.defaults.headers.common = { 'Authorization': `Bearer ${token}` }
 
 const defaultTask: IAppTask = {
     id: 0,
@@ -57,7 +59,7 @@ const AppTaskForm: React.FC<AppTaskFormProps> = ({ task, onClose }) => {
     const [formData, setFormData] = useState<IAppTask>(defaultTask);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [showConfirm, setShowConfirm] = useState(false);
-    const [pendingSubmit, setPendingSubmit] = useState(false);
+    const [setPendingSubmit] = useState(false);
 
     useEffect(() => {
         if (task) {

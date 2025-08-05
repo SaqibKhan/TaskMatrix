@@ -4,6 +4,7 @@ import { Modal } from '@mui/material';
 import { useInView } from 'react-intersection-observer';
 import TaskStatusChart from './TaskStatusChart';
 
+
 export interface IAppTask {
   id: number;
   title: string;
@@ -14,6 +15,7 @@ export interface IAppTask {
 }
 
 const API_URL = 'https://localhost:7127/AppTask/paged';
+const token = localStorage.getItem('jwtToken');
 const PAGE_SIZE = 20;
 
 const TaskList: React.FC = () => {
@@ -41,10 +43,15 @@ const TaskList: React.FC = () => {
     let attempt = 0;
     let success = false;
     let data: IAppTask[] = [];
+    
 
     while (attempt < maxRetries && !success) {
       try {
-        const res = await fetch(`${API_URL}?skip=${currentSkip}&take=${PAGE_SIZE}`);
+        const res = await fetch(`${API_URL}?skip=${currentSkip}&take=${PAGE_SIZE}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
         data = await res.json();
         success = true;
@@ -90,10 +97,30 @@ const TaskList: React.FC = () => {
 
   // Delete a task and refresh the list
   const handleDelete = async (id: number) => {
-    await fetch(`https://localhost:7127/AppTask/${id}`, { method: 'DELETE' });
-    setSkip(0);
-    setHasMore(true);
-    fetchTasks(true);
+      try {
+          const response = await fetch(`https://localhost:7127/AppTask/${id}`, {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }
+
+          });
+          if (!response.ok) {
+              const errorText = await response.text();
+              throw new Error(`Error ${response.status}: ${errorText}`);
+          } else {
+              setSkip(0);
+              setHasMore(true);
+              fetchTasks(true);
+          }
+
+          console.log('Task deleted successfully');
+      } catch (error) {
+          console.error('Failed to delete task:', error.message);
+      }
+
+   
   };
 
   // Open the form to add a new task

@@ -19,6 +19,7 @@ export interface IAppTask {
 }
 
 const API_URL = 'https://localhost:7127/AppTask';
+const token = localStorage.getItem('jwtToken');
 
 const statusLabels: Record<TaskStatus, string> = {
   [TaskStatus.Pending]: 'Pending',
@@ -33,7 +34,11 @@ const TaskStatusChart: React.FC = () => {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      const res = await fetch(API_URL);
+        const res = await fetch(API_URL, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });;
       const data: IAppTask[] = await res.json();
       const statusCount: Record<TaskStatus, number> = {
         [TaskStatus.Pending]: 0,
